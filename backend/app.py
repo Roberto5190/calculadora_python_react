@@ -1,8 +1,19 @@
 from flask import Flask, jsonify, request
-from calculos import sumar, restar, multiplicar, dividir, ErrorCalculo, _cargar_historial
+from calculos import sumar, restar, multiplicar, dividir, ErrorCalculo, _cargar_historial, clear_historial
 from usuarios import registrar_usuario
+from flask_cors import CORS
+
+
 
 app = Flask(__name__)
+
+
+
+app.config['DEBUG'] = True
+
+
+# Habilitar CORS para toda la aplicación
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # —————— Health check ——————
 @app.route('/health', methods=['GET'])
@@ -17,6 +28,19 @@ def handle_error_calculo(e):
 @app.errorhandler(422)
 def handle_unprocessable(e):
     return jsonify({"error": "Datos inválidos"}), 422
+
+# MANEJO HISTORIAL
+@app.route('/historial', methods=['DELETE'])
+def handle_clear_historial():
+    # Llamada a la función que limpia el historial
+    clear_historial()
+    
+    _cargar_historial()
+    # Retornar una respuesta JSON indicando que se eliminó correctamente
+    return jsonify({"mensaje": "Historial eliminado correctamente"}), 200
+
+
+
 
 # —————— Endpoint de cálculo ——————
 @app.route('/calcular', methods=['POST'])
@@ -48,6 +72,8 @@ def api_calcular():
         raise  # será capturado por el errorhandler
     return jsonify({"resultado": resultado})
 
+
+
 # —————— Endpoint de historial ——————
 @app.route('/historial', methods=['GET'])
 def api_historial():
@@ -58,6 +84,8 @@ def api_historial():
     # Ordenar descendente y devolver máximo 10
     salida = sorted(hist, key=lambda x: x['timestamp'], reverse=True)[:10]
     return jsonify(salida)
+
+
 
 # —————— Endpoint de registro de usuarios ——————
 @app.route('/usuarios/registro', methods=['POST'])
@@ -72,6 +100,11 @@ def api_registrar_usuario():
     except ValueError as e:
         return jsonify({"error": str(e)}), 422
     return jsonify({"id": nuevo['id'], "mensaje": "Usuario registrado"})
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

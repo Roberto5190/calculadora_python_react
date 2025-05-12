@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-export default function Calculadora() {
+
+export default function Calculadora({ historial, setHistorial }) {
   const [a, setA] = useState('')
   const [b, setB] = useState('')
   const [operacion, setOperacion] = useState('sumar')
@@ -10,6 +11,24 @@ export default function Calculadora() {
   const [loading, setLoading] = useState(false)
 
   const canCalculate = a !== '' && b !== ''
+
+  // Función para actualizar el historial
+  const agregarAlHistorial = (operacion, a, b, resultado) => {
+    const newEntry = {
+      id: new Date().toISOString(),
+      operacion,
+      parametros: { a, b },
+      resultado,
+      timestamp: new Date().toISOString(),
+    };
+    setHistorial([newEntry, ...historial]); // Añadimos al principio del historial
+  };
+
+  const resetForm = () => {
+    setA('');
+    setB('');
+    setOperacion('sumar');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -22,7 +41,10 @@ export default function Calculadora() {
         a: parseFloat(a),
         b: parseFloat(b)
       })
-      setResultado(res.data.resultado)
+      const resultado = res.data.resultado;
+      setResultado(resultado)
+      agregarAlHistorial(operacion, a, b, resultado)
+
     } catch (err) {
       if (err.response?.data?.error) {
         setError(err.response.data.error)
@@ -32,6 +54,7 @@ export default function Calculadora() {
     } finally {
       setLoading(false)
     }
+    resetForm()
   }
 
   return (

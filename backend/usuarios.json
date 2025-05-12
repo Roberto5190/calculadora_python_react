@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "id": "4a6bdf27-6d1a-421e-abd1-d821f15cd962",
+    "nombre": "Robs",
+    "email": "roberto@pinga.com",
+    "saldo": 23423.0
+  }
+]

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-export default function Historial() {
-  const [historial, setHistorial] = useState([])
+export default function Historial({historial, setHistorial}) {
   const [filter, setFilter] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -25,7 +24,22 @@ export default function Historial() {
 
   useEffect(() => {
     fetchHistorial()
-  }, [])
+  }, [filter])
+
+  const clearHistorial = () => {
+    fetch('http://localhost:5000/historial', { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.mensaje); // "Historial eliminado"
+        fetchHistorial()
+        setHistorial([])
+      })
+      .catch(err => console.error('Error al eliminar:', err));
+  }
+
+  const handleFilter = (value) => {
+    setFilter(value)
+  }
 
   return (
     <div className="bg-white p-4 rounded shadow">
@@ -33,7 +47,7 @@ export default function Historial() {
       <div className="flex items-center gap-2 mb-4">
         <select
           value={filter}
-          onChange={e => setFilter(e.target.value)}
+          onChange={(e) => handleFilter(e.target.value)}
           className="border rounded p-2"
         >
           <option value="">Todas</option>
@@ -43,10 +57,10 @@ export default function Historial() {
           <option value="dividir">Dividir</option>
         </select>
         <button
-          onClick={fetchHistorial}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={clearHistorial}
+          className="bg-red-300 text-white px-4 py-2 rounded"
         >
-          Recargar
+          Limpiar
         </button>
       </div>
 

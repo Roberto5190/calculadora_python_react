@@ -1,18 +1,22 @@
-"""
-calculos.py
-Funciones puras de la calculadora y registro de historial.
-"""
-
 import uuid
 import json
 import threading
 from datetime import datetime
+from flask import  jsonify
+
 
 lock = threading.Lock()
 HISTORIAL_FILE = 'historial.json'
 
 class ErrorCalculo(Exception):
     """Error en cálculos (p. ej. división por cero)."""
+
+
+def clear_historial():
+    with open(HISTORIAL_FILE, "w") as f:
+        return json.dump([], f)
+
+
 
 def _cargar_historial():
     with lock, open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
@@ -56,7 +60,8 @@ def multiplicar(a, b):
 def dividir(a, b):
     """Retorna la división de a entre b. Lanza ErrorCalculo si b == 0."""
     if b == 0:
-        _registra('dividir', a, b, None)
+        res =  "No válido"
+        _registra('dividir', a, b, res)
         raise ErrorCalculo("División por cero no permitida")
     res = a / b
     _registra('dividir', a, b, res)

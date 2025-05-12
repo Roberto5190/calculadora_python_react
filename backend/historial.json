@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "4098dcaf-a31b-483e-8f72-0e46810e4b5f",
+    "timestamp": "2025-05-12T18:22:01.530705Z",
+    "operacion": "sumar",
+    "parametros": {
+      "a": 435345,
+      "b": 5
+    },
+    "resultado": 435350
+  },
+  {
+    "id": "55431baa-fe31-4f08-84a4-7f7dbb88c78c",
+    "timestamp": "2025-05-12T18:23:57.429632Z",
+    "operacion": "restar",
+    "parametros": {
+      "a": 45,
+      "b": 23
+    },
+    "resultado": 22
+  }
+]
