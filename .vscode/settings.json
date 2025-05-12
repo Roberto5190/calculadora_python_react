@@ -1,0 +1,9 @@
+{
+    // apunta directamente al ejecutable de Python de tu venv
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+  
+    // añade la carpeta actual (backend) al análisis
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}"
+    ]
+  }
